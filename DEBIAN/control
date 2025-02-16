@@ -1,0 +1,9 @@
+Package: Lab1
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: g++, build-essential
+Maintainer: vladmirakkuzin10@gmail.com
+Description: Fibonacci numbers
+
