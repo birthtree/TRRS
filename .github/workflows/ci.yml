@@ -47,7 +47,7 @@ jobs:
           chmod +x artifacts/fibonacci
           ./artifacts/fibonacci 5 | grep "Number of Fibonacchi #5 = 5"
           ./artifacts/fibonacci 1 | grep "Number of Fibonacchi #1 = 1"
-          ./artifacts/fibonacci 20 | grep "Number of Fibonacchi #20 = 6765" 
+          ./artifacts/fibonacci 20 | grep "Number of Fibonacchi #20 = 6765"
 
   package:
     needs: test
