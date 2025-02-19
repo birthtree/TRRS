@@ -18,11 +18,10 @@ jobs:
       - name: Run Make
         run: |
           cd src
-          g++ -Wall -Wextra -O2 Fibi.cpp -o fibonacci || { echo "Compilation failed"; exit 1; }
-          ls -l  # Проверяем, что файл fibonacci существует в папке src
+          make || { echo "Make failed"; exit 1; }  # Используем make вместо ручной компиляции
+          ls -l  # Проверяем, что файл fibonacci существует в папке usr/bin
           mkdir -p ../artifacts
-          cp src/fibonacci ../usr/bin/ || { echo "Failed to copy fibonacci to /usr/bin"; exit 1; }
-          rm -f src/fibonacci || { echo "Failed to remove fibonacci from src"; exit 1; }
+          cp /usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
 
       - name: Upload Artifact (Binary)
         uses: actions/upload-artifact@v4
