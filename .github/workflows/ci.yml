@@ -70,7 +70,7 @@ jobs:
           mkdir -p artifacts/deb/usr/local/bin
           mkdir -p artifacts/deb/DEBIAN
           cp DEBIAN/control artifacts/deb/DEBIAN/
-          cp src/fibonacci artifacts/deb/usr/local/bin/
+          cp ../usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Исправление пути
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
