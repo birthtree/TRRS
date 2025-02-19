@@ -19,7 +19,7 @@ jobs:
         run: |
           cd src
           make || { echo "Make failed"; exit 1; }
-          ls -l  # Проверяем, что файл fibonacci существует в папке ../usr/bin
+          ls -l
           mkdir -p ../artifacts
           cp ../usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
 
@@ -70,7 +70,7 @@ jobs:
           mkdir -p artifacts/deb/usr/local/bin
           mkdir -p artifacts/deb/DEBIAN
           cp DEBIAN/control artifacts/deb/DEBIAN/
-          cp ../usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Исправление пути
+          cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
