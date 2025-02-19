@@ -6,7 +6,7 @@ on:
       - lab2
 
 jobs:
-  build:
+  RunMake:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -19,7 +19,7 @@ jobs:
         run: |
           cd src
           g++ -Wall -Wextra -O2 Fibi.cpp -o fibonacci || { echo "Compilation failed"; exit 1; }
-          ls -l
+          ls -l  # Проверяем, что файл fibonacci существует в папке usr/bin
           mkdir -p ../artifacts
           cp ../usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci"; exit 1; }
 
@@ -29,8 +29,8 @@ jobs:
           name: fibonacci-binary
           path: artifacts/
 
-  test:
-    needs: build
+  RunTest:
+    needs: RunMake
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -52,8 +52,8 @@ jobs:
           echo "Running fibonacci with argument 20"
           ./artifacts/fibonacci 20
 
-  package:
-    needs: test
+  RunPackage:
+    needs: RunTest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -68,7 +68,9 @@ jobs:
       - name: Create Debian Package
         run: |
           mkdir -p artifacts/deb/usr/local/bin
-          cp artifacts/fibonacci artifacts/deb/usr/local/bin/
+          mkdir -p artifacts/deb/DEBIAN
+          cp DEBIAN/control artifacts/deb/DEBIAN/
+          cp src/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
