@@ -19,9 +19,10 @@ jobs:
         run: |
           cd src
           g++ -Wall -Wextra -O2 Fibi.cpp -o fibonacci || { echo "Compilation failed"; exit 1; }
-          ls -l  # Проверяем, что файл fibonacci существует в папке usr/bin
+          ls -l  # Проверяем, что файл fibonacci существует в папке src
           mkdir -p ../artifacts
-          cp ../usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci"; exit 1; }
+          cp src/fibonacci ../usr/bin/ || { echo "Failed to copy fibonacci to /usr/bin"; exit 1; }
+          rm -f src/fibonacci || { echo "Failed to remove fibonacci from src"; exit 1; }
 
       - name: Upload Artifact (Binary)
         uses: actions/upload-artifact@v4
@@ -70,7 +71,7 @@ jobs:
           mkdir -p artifacts/deb/usr/local/bin
           mkdir -p artifacts/deb/DEBIAN
           cp DEBIAN/control artifacts/deb/DEBIAN/
-          cp ../usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Исправление пути
+          cp /usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Используем путь /usr/bin/fibonacci
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
