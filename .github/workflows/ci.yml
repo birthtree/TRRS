@@ -18,10 +18,10 @@ jobs:
       - name: Run Make
         run: |
           cd src
-          make || { echo "Make failed"; exit 1; }  # Используем make вместо ручной компиляции
-          ls -l  # Проверяем, что файл fibonacci существует в папке usr/bin
+          make || { echo "Make failed"; exit 1; }
+          ls -l  # Проверяем, что файл fibonacci существует в папке ../usr/bin
           mkdir -p ../artifacts
-          cp /usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
+          cp ../usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
 
       - name: Upload Artifact (Binary)
         uses: actions/upload-artifact@v4
@@ -70,7 +70,7 @@ jobs:
           mkdir -p artifacts/deb/usr/local/bin
           mkdir -p artifacts/deb/DEBIAN
           cp DEBIAN/control artifacts/deb/DEBIAN/
-          cp /usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Используем путь /usr/bin/fibonacci
+          cp ../usr/bin/fibonacci artifacts/deb/usr/local/bin/  # Исправление пути
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
