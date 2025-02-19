@@ -1,0 +1,33 @@
+stages:
+  - RunMake
+  - RunTest
+  - RunPackage
+
+RunMake:
+  stage: RunMake
+  script:
+    - make
+    - mkdir -p artifacts
+    - cp fibonacci artifacts/
+  artifacts:
+    paths:
+      - artifacts/
+
+RunTest:
+  stage: RunTest
+  script:
+    - chmod +x artifacts/fibonacci
+    - ./artifacts/fibonacci 10 | grep "Number of Fibonacchi #10 = 55"
+    - ./artifacts/fibonacci 1 | grep "Number of Fibonacchi #1 = 1"
+    - ./artifacts/fibonacci 99 | grep "Number of Fibonacchi #99 = 218922995834555169026"
+
+RunPackage:
+  stage: RunPackage
+  script:
+    - mkdir -p artifacts/deb
+    - mkdir -p artifacts/deb/usr/local/bin
+    - cp artifacts/fibonacci artifacts/deb/usr/local/bin/
+    - dpkg-deb --build artifacts/deb fibonacci.deb
+  artifacts:
+    paths:
+      - fibonacci.deb
