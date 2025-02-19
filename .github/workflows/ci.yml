@@ -18,17 +18,24 @@ jobs:
       - name: Run Make
         run: |
           cd src
-          g++ -Wall -Wextra -O2 Fibi.cpp -o fibonacci || { echo "Compilation failed"; exit 1; }
+          make || { echo "Make failed"; exit 1; }
           ls -l
           mkdir -p ../usr/bin
           cp fibonacci ../usr/bin/ || { echo "Failed to copy fibonacci"; exit 1; }
           rm -f fibonacci
 
+      - name: Check if artifact exists
+        run: |
+          if [ ! -f ../usr/bin/fibonacci ]; then
+            echo "fibonacci was not found in ../usr/bin/"
+            exit 1
+          fi
+
       - name: Upload Artifact (Binary)
         uses: actions/upload-artifact@v4
         with:
           name: fibonacci-binary
-          path: artifacts/
+          path: ../usr/bin/fibonacci
 
   RunTest:
     needs: RunMake
@@ -72,12 +79,12 @@ jobs:
           mkdir -p artifacts/deb/DEBIAN
           cp DEBIAN/control artifacts/deb/DEBIAN/
 
-          if [ ! -f ../usr/bin/fibonacci ]; then
-            echo "fibonacci not found in ../usr/bin/"
+          if [ ! -f artifacts/fibonacci ]; then
+            echo "fibonacci not found in artifacts/"
             exit 1
           fi
 
-          cp ../usr/bin/fibonacci artifacts/deb/usr/local/bin/
+          cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
 
       - name: Upload Debian Package
