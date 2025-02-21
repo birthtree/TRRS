@@ -102,8 +102,8 @@ jobs:
           context: .  # Используем текущую директорию как контекст
           file: ./Dockerfile
           push: true
-          tags: your-dockerhub-username/fibonacci:latest
+          tags: birthtree/fibonacci:latest
 
       - name: Run Container
         run: |
-          docker run --rm your-dockerhub-username/fibonacci 10
+          docker run --rm birthtree/fibonacci 10
