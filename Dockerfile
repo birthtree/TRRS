@@ -7,5 +7,4 @@ COPY fibonacci.deb /tmp/fibonacci.deb
 RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f
 
 ENTRYPOINT ["/usr/local/bin/fibonacci"]
-#Create Rep
-CMD ["5"]  
+CMD ["5"]
