@@ -8,4 +8,4 @@ RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f
 
 ENTRYPOINT ["/usr/local/bin/fibonacci"]
 
-CMD ["5"]  # По умолчанию запускаем fibonacci 5
+CMD ["5"]  
