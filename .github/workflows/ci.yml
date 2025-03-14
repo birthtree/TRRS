@@ -25,24 +25,24 @@ jobs:
           cmake .. -DBUILD_SHARED_LIBS=ON
           make -j$(nproc)
           sudo make install
-          # Обновляем кэш библиотек
-          sudo ldconfig
-          # Проверяем местоположение .pc файла
-          find /usr/local /lib /usr/lib -name "prometheus-cpp.pc" || echo "prometheus-cpp.pc not found"
-          # Устанавливаем путь к библиотекам для pkg-config
-          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-          sudo ldconfig
+          # Устанавливаем путь к библиотекам
+          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+          # Проверяем наличие prometheus-cpp.pc
+          find /usr/local/lib/pkgconfig -name prometheus-cpp.pc || echo "prometheus-cpp.pc not found"
 
-      - name: Check pkg-config path
+      - name: Set PKG_CONFIG_PATH
         run: |
-          echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
-          pkg-config --cflags --libs prometheus-cpp || echo "prometheus-cpp not found"
+          # Если файл найден, устанавливаем PKG_CONFIG_PATH
+          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+          echo "PKG_CONFIG_PATH is set to $PKG_CONFIG_PATH"
+          # Проверка с использованием pkg-config
+          pkg-config --cflags --libs prometheus-cpp
 
       - name: Run Make
         run: |
           cd src
-          # Используем pkg-config для поиска библиотеки
-          pkg-config --cflags --libs prometheus-cpp
+          # Используем pkg-config для компиляции
+          g++ $(pkg-config --cflags --libs prometheus-cpp) -Wall -Wextra -O2 -std=c++11 Fibi.cpp -o fibonacci
           make || { echo "Make failed"; exit 1; }
           ls -l
           mkdir -p ../artifacts
