@@ -1,23 +1,22 @@
-TARGET = fibonacci
-CC = g++
-CFLAGS = -Wall -Wextra -O2 -std=c++11
-LIBS = -lprometheus-cpp
-LIB_PATH = /usr/local/lib  # Убедитесь, что путь правильный
+# Makefile
 
-SRCS = Fibi.cpp
+# Указываем путь к библиотекам
+LIB_PATH = /usr/local/lib
 
-# Цель по умолчанию
-all: $(TARGET) install clean
+# Указываем флаги компиляции
+CXXFLAGS = -Wall -Wextra -O2 -std=c++11
 
-# Сборка
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) -L$(LIB_PATH) $(LIBS)
+# Флаги линковки
+LDFLAGS = -L$(LIB_PATH) -lprometheus-cpp
 
-# Установка
-install:
-	mkdir -p ../usr/bin
-	cp $(TARGET) ../usr/bin/
+# Файлы исходников
+SRC = Fibi.cpp
 
-# Очистка
+# Цели
+all: fibonacci
+
+fibonacci: $(SRC)
+    g++ $(CXXFLAGS) $(SRC) -o fibonacci $(LDFLAGS)
+
 clean:
-	rm -f $(TARGET)
+    rm -f fibonacci Fibi.o

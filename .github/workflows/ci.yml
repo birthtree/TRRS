@@ -25,6 +25,8 @@ jobs:
           cmake .. -DBUILD_SHARED_LIBS=ON
           make -j$(nproc)
           sudo make install
+          # Устанавливаем путь к библиотекам
+          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
       - name: Run Make
         run: |

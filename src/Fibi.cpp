@@ -27,16 +27,11 @@ int main(int argc, char* argv[]) {
     Exposer exposer{"0.0.0.0:8080"};  
     auto registry = std::make_shared<Registry>();
 
-    // Создаем объект BucketBoundaries для гистограммы
-    std::vector<double> buckets = {1.0, 2.0, 5.0, 10.0};  // Пример значений для границ корзин
-
-    // Регистрируем счетчик запросов
     auto& request_counter_family = BuildCounter()
         .Name("fibonacci_requests_total")
         .Help("Total number of Fibonacci requests")
         .Register(*registry);
 
-    // Регистрируем гистограмму запросов с границами корзин
     auto& request_time_family = BuildHistogram()
         .Name("fibonacci_request_duration_seconds")
         .Help("Histogram of request durations")
@@ -44,7 +39,7 @@ int main(int argc, char* argv[]) {
 
     // Создаем экземпляры Counter и Histogram
     auto& request_counter = request_counter_family.Add({});
-    auto& request_time = request_time_family.Add({}, buckets);  // Передаем границы корзин здесь
+    auto& request_time = request_time_family.Add({});
 
     exposer.RegisterCollectable(registry);
 
