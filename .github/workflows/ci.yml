@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential dpkg cmake git zlib1g-dev libcurl4-openssl-dev
+          sudo apt install -y build-essential dpkg cmake git zlib1g-dev libcurl4-openssl-dev pkg-config
 
       - name: Install Prometheus C++ Client
         run: |
@@ -34,6 +34,8 @@ jobs:
       - name: Run Make
         run: |
           cd src
+          # Используем pkg-config для поиска библиотеки
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --cflags --libs prometheus-cpp
           make || { echo "Make failed"; exit 1; }
           ls -l
           mkdir -p ../artifacts
