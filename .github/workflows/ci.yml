@@ -32,17 +32,23 @@ jobs:
 
       - name: Set PKG_CONFIG_PATH
         run: |
-          # Если файл найден, устанавливаем PKG_CONFIG_PATH
+          # Устанавливаем PKG_CONFIG_PATH для поиска .pc файлов
           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
           echo "PKG_CONFIG_PATH is set to $PKG_CONFIG_PATH"
           # Проверка с использованием pkg-config
-          pkg-config --cflags --libs prometheus-cpp
+          pkg-config --cflags --libs prometheus-cpp || echo "prometheus-cpp not found"
 
-      - name: Run Make
+      - name: Run Make (use pkg-config if available)
         run: |
           cd src
-          # Используем pkg-config для компиляции
-          g++ $(pkg-config --cflags --libs prometheus-cpp) -Wall -Wextra -O2 -std=c++11 Fibi.cpp -o fibonacci
+          # Пробуем использовать pkg-config, если он доступен, или вручную указываем путь
+          if command -v pkg-config &> /dev/null
+          then
+            g++ $(pkg-config --cflags --libs prometheus-cpp) -Wall -Wextra -O2 -std=c++11 Fibi.cpp -o fibonacci
+          else
+            echo "pkg-config not found, using manual flags"
+            g++ -Wall -Wextra -O2 -std=c++11 Fibi.cpp -o fibonacci -L/usr/local/lib -lprometheus-cpp
+          fi
           make || { echo "Make failed"; exit 1; }
           ls -l
           mkdir -p ../artifacts
