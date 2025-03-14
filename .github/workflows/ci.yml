@@ -54,8 +54,8 @@ jobs:
           path: artifacts/
 
       - name: Run Tests
-      #  run: |
-      #    chmod +x artifacts/fibonacci
+        run: |
+          chmod +x artifacts/fibonacci
        #   echo "Running fibonacci with argument 5"
          # ./artifacts/fibonacci 5
          # echo "Running fibonacci with argument 1"
@@ -121,5 +121,6 @@ jobs:
           tags: birthtree/fibonacci:latest
 
       - name: Run Container
-       # run: |
+        run: |
+          echo "Running fibonacci with argument 5"
          # docker run --rm birthtree/fibonacci 10
