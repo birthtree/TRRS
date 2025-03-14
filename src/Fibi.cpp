@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     // Создаем экземпляры Counter и Histogram
     auto& request_counter = request_counter_family.Add({});
     auto& request_time = request_time_family.Add({});
-
+// Создаем экземпляры Counter и Histogram
     exposer.RegisterCollectable(registry);
 
     while (true) {
