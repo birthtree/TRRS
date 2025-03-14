@@ -3,7 +3,7 @@ CC = g++
 CFLAGS = -Wall -Wextra -O2
 SRCS = Fibi.cpp
 
-# Добавляем флаги для линковки с Prometheus
+# Пути к заголовочным файлам и библиотекам Prometheus
 PROMETHEUS_INCLUDE = -I/usr/local/include
 PROMETHEUS_LIB = -L/usr/local/lib -lprometheus-cpp -lcurl -lz
 
