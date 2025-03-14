@@ -27,12 +27,16 @@ jobs:
           sudo make install
           # Обновляем кэш библиотек
           sudo ldconfig
-          # Проверим путь установки .pc файла
-          echo "Checking .pc file location"
-          find /usr/local/lib/pkgconfig -name "prometheus-cpp.pc"
+          # Проверяем местоположение .pc файла
+          find /usr/local /lib /usr/lib -name "prometheus-cpp.pc" || echo "prometheus-cpp.pc not found"
           # Устанавливаем путь к библиотекам для pkg-config
           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
           sudo ldconfig
+
+      - name: Check pkg-config path
+        run: |
+          echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
+          pkg-config --cflags --libs prometheus-cpp || echo "prometheus-cpp not found"
 
       - name: Run Make
         run: |
