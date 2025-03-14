@@ -2,7 +2,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - lab4
+      - lab3
 jobs:
   RunMake:
     runs-on: ubuntu-latest
