@@ -25,8 +25,11 @@ jobs:
           cmake .. -DBUILD_SHARED_LIBS=ON
           make -j$(nproc)
           sudo make install
+          # Обновляем кэш библиотек
+          sudo ldconfig
           # Устанавливаем путь к библиотекам
-          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+          echo "/usr/local/lib" | sudo tee -a /etc/ld.so.conf.d/prometheus-cpp.conf
+          sudo ldconfig
 
       - name: Run Make
         run: |
