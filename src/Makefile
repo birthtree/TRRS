@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -Wextra -O2 -std=c++11
-LDFLAGS = -lprometheus-cpp
+LDFLAGS = -L/usr/local/lib -lprometheus-cpp  # Add the library path here
 
 SRCS = Fibi.cpp
 OBJS = $(SRCS:.cpp=.o)
@@ -19,8 +19,8 @@ $(TARGET): $(OBJS)
 
 # Install the binary
 install:
-	mkdir -p ../usr/local/bin
-	cp $(TARGET) ../usr/local/bin/
+	mkdir -p ../artifacts
+	cp $(TARGET) ../artifacts/
 
 # Clean up
 clean:
