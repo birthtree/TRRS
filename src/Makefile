@@ -1,24 +1,18 @@
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall -g
+LDFLAGS = -lprometheus-cpp
+
+SRCS = src/Fibi.cpp
+OBJS = $(SRCS:.cpp=.o)
 TARGET = fibonacci
-CC = g++
-CFLAGS = -Wall -Wextra -O2
-SRCS = Fibi.cpp
 
-# Пути к заголовочным файлам и библиотекам Prometheus
-PROMETHEUS_INCLUDE = -I/usr/local/include
-PROMETHEUS_LIB = -L/usr/local/lib -lprometheus-cpp -lcurl -lz
+all: $(TARGET)
 
-# Цель по умолчанию
-all: $(TARGET) install clean
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-# Сборка
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(PROMETHEUS_INCLUDE) $(SRCS) -o $(TARGET) $(PROMETHEUS_LIB)
+src/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Установка
-install:
-	mkdir -p ../usr/bin
-	cp $(TARGET) ../usr/bin/
-
-# Очистка
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJS) $(TARGET)
