@@ -3,12 +3,16 @@ CC = g++
 CFLAGS = -Wall -Wextra -O2
 SRCS = Fibi.cpp
 
+# Добавляем флаги для линковки с Prometheus
+PROMETHEUS_INCLUDE = -I/usr/local/include
+PROMETHEUS_LIB = -L/usr/local/lib -lprometheus-cpp -lcurl -lz
+
 # Цель по умолчанию
 all: $(TARGET) install clean
 
 # Сборка
 $(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET)
+	$(CC) $(CFLAGS) $(PROMETHEUS_INCLUDE) $(SRCS) -o $(TARGET) $(PROMETHEUS_LIB)
 
 # Установка
 install:
