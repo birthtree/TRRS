@@ -1,22 +1,27 @@
-CXX = g++
-CXXFLAGS = -std=c++11 -Wall -g
+CC = g++
+CFLAGS = -Wall -Wextra -O2 -std=c++11
 LDFLAGS = -lprometheus-cpp
 
-SRCS = src/Fibi.cpp
-OBJS = $(SRCS:.cpp=.o)
+SRCS = Fibi.cpp
+OBJS = Fibi.o
 TARGET = fibonacci
 
 # Цель по умолчанию
-all: $(TARGET)
+all: $(TARGET) install clean
 
-# Правило для компиляции .cpp файлов в .o
+# Сборка
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
+	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-# Правило для компиляции .cpp в .o
-src/%.o: src/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Компиляция исходников в объектные файлы
+$(OBJS): $(SRCS)
+	$(CC) $(CFLAGS) -c $(SRCS)
 
-# Очистка сгенерированных файлов
+# Установка
+install:
+	mkdir -p ../usr/local/bin
+	cp $(TARGET) ../usr/local/bin/
+
+# Очистка
 clean:
 	rm -f $(OBJS) $(TARGET)
