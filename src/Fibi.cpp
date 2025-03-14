@@ -29,7 +29,6 @@ int main(int argc, char* argv[]) {
 
     // Создаем объект BucketBoundaries для гистограммы
     std::vector<double> buckets = {1.0, 2.0, 5.0, 10.0};  // Пример значений для границ корзин
-    Histogram::BucketBoundaries bucket_boundaries(buckets);
 
     // Регистрируем счетчик запросов
     auto& request_counter_family = BuildCounter()
@@ -41,12 +40,11 @@ int main(int argc, char* argv[]) {
     auto& request_time_family = BuildHistogram()
         .Name("fibonacci_request_duration_seconds")
         .Help("Histogram of request durations")
-        .Buckets(bucket_boundaries)  // Указываем границы корзин
         .Register(*registry);
 
     // Создаем экземпляры Counter и Histogram
     auto& request_counter = request_counter_family.Add({});
-    auto& request_time = request_time_family.Add({});
+    auto& request_time = request_time_family.Add({}, buckets);  // Передаем границы корзин здесь
 
     exposer.RegisterCollectable(registry);
 

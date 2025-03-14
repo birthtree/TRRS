@@ -3,25 +3,25 @@ CFLAGS = -Wall -Wextra -O2 -std=c++11
 LDFLAGS = -lprometheus-cpp
 
 SRCS = Fibi.cpp
-OBJS = Fibi.o
+OBJS = $(SRCS:.cpp=.o)
 TARGET = fibonacci
 
-# Цель по умолчанию
+# Default target
 all: $(TARGET) install clean
 
-# Сборка
+# Build the target
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-# Компиляция исходников в объектные файлы
-$(OBJS): $(SRCS)
-	$(CC) $(CFLAGS) -c $(SRCS)
+# Compile source files into object files
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Установка
+# Install the binary
 install:
 	mkdir -p ../usr/local/bin
 	cp $(TARGET) ../usr/local/bin/
 
-# Очистка
+# Clean up
 clean:
 	rm -f $(OBJS) $(TARGET)
