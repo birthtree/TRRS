@@ -1,27 +1,23 @@
+TARGET = fibonacci
 CC = g++
 CFLAGS = -Wall -Wextra -O2 -std=c++11
-LDFLAGS = -L/usr/local/lib -lprometheus-cpp  # Add the library path here
+LIBS = -lprometheus-cpp
+LIB_PATH = /usr/local/lib  # Убедитесь, что путь правильный
 
 SRCS = Fibi.cpp
-OBJS = $(SRCS:.cpp=.o)
-TARGET = fibonacci
 
-# Default target
+# Цель по умолчанию
 all: $(TARGET) install clean
 
-# Build the target
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
+# Сборка
+$(TARGET): $(SRCS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) -L$(LIB_PATH) $(LIBS)
 
-# Compile source files into object files
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Install the binary
+# Установка
 install:
-	mkdir -p ../artifacts
-	cp $(TARGET) ../artifacts/
+	mkdir -p ../usr/bin
+	cp $(TARGET) ../usr/bin/
 
-# Clean up
+# Очистка
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(TARGET)
