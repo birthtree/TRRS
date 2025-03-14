@@ -11,7 +11,7 @@ using namespace std;
 using namespace prometheus;
 
 // Функция вычисления числа Фибоначчи
-long long fibonacchi(int n) {
+long long fibonacci(int n) {
     if (n <= 0) return 0;
     if (n == 1) return 1;
     long long a = 0, b = 1, temp;
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
         int n = rand() % 20 + 1;  // Генерируем случайное число от 1 до 20
 
         auto start = chrono::high_resolution_clock::now();
-        long long result = fibonacchi(n);
+        long long result = fibonacci(n);
         auto end = chrono::high_resolution_clock::now();
         
         double duration = chrono::duration<double>(end - start).count();

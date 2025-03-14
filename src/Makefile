@@ -16,8 +16,8 @@ $(TARGET): $(SRCS)
 
 # Установка
 install:
-	mkdir -p ../usr/bin
-	cp $(TARGET) ../usr/bin/
+	mkdir -p /usr/local/bin
+	cp $(TARGET) /usr/local/bin/
 
 # Очистка
 clean:
