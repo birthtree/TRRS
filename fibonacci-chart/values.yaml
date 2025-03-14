@@ -116,6 +116,14 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
+prometheus:
+  prometheusSpec:
+    scrapeConfigs:
+      - job_name: "fibonacci"
+        static_configs:
+          - targets: ["fibonacci-service:8080"]
+
+
 nodeSelector: {}
 
 tolerations: []
