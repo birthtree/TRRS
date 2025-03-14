@@ -24,28 +24,28 @@ long long fibonacci(int n) {
 }
 
 int main(int argc, char* argv[]) {
-    Exposer exposer{"0.0.0.0:8080"};  
+    // Создаем экспортер для Prometheus
+    Exposer exposer{"0.0.0.0:8080"};
     auto registry = std::make_shared<Registry>();
 
     // Определяем границы корзин для гистограммы
-    std::vector<double> bucket_boundaries = {0.1, 0.2, 0.5, 1.0, 2.0, 5.0};  // Пример границ
+    std::vector<double> bucket_boundaries = {0.1, 0.2, 0.5, 1.0, 2.0, 5.0};
 
-    // Создаем family для счетчика
+    // Создаем метрику Counter
     auto& request_counter_family = BuildCounter()
         .Name("fibonacci_requests_total")
         .Help("Total number of Fibonacci requests")
         .Register(*registry);
+    auto& request_counter = request_counter_family.Add({});
 
-    // Создаем family для гистограммы
+    // Создаем метрику Histogram
     auto& request_time_family = BuildHistogram()
         .Name("fibonacci_request_duration_seconds")
         .Help("Histogram of request durations")
         .Register(*registry);
+    auto& request_time = request_time_family.Add({}, bucket_boundaries);
 
-    // Создаем экземпляры Counter и Histogram
-    auto& request_counter = request_counter_family.Add({});
-    auto& request_time = request_time_family.Add({}, bucket_boundaries);  // Передаем границы корзин здесь
-
+    // Регистрируем метрики в экспортере
     exposer.RegisterCollectable(registry);
 
     while (true) {
@@ -54,10 +54,10 @@ int main(int argc, char* argv[]) {
         auto start = chrono::high_resolution_clock::now();
         long long result = fibonacci(n);
         auto end = chrono::high_resolution_clock::now();
-        
+
         double duration = chrono::duration<double>(end - start).count();
-        request_time.Observe(duration);
-        request_counter.Increment();
+        request_time.Observe(duration);  // Записываем время выполнения
+        request_counter.Increment();     // Увеличиваем счетчик запросов
 
         cout << "Fibonacci #" << n << " = " << result << " (Time: " << duration << "s)" << endl;
 

@@ -27,11 +27,8 @@ jobs:
           sudo make install
           # Устанавливаем путь к библиотекам
           export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-          # Устанавливаем PKG_CONFIG_PATH
           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-          echo "PKG_CONFIG_PATH is set to $PKG_CONFIG_PATH"
-          # Проверяем наличие prometheus-cpp.pc
-          find /usr/local/lib/pkgconfig -name prometheus-cpp.pc || echo "prometheus-cpp.pc not found"
+          echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
 
       - name: Run Make
         run: |

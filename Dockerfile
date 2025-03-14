@@ -17,11 +17,16 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
-# Копирование бинарника
-COPY artifacts/fibonacci /usr/local/bin/fibonacci
+# Копирование исходного кода
+COPY src/Fibi.cpp /app/src/Fibi.cpp
+COPY Makefile /app/Makefile
+
+# Сборка приложения
+WORKDIR /app
+RUN make
 
 # Открытие порта
 EXPOSE 8080
 
 # Запуск приложения
-CMD ["fibonacci"]
+CMD ["./fibonacci"]

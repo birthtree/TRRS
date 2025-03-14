@@ -5,10 +5,10 @@ SRCS = Fibi.cpp
 
 # Путь к библиотекам
 LIB_PATH = /usr/local/lib
-LIBS = -lprometheus-cpp
+LIBS = -lprometheus-cpp -lcurl
 
 # Цель по умолчанию
-all: $(TARGET) install clean
+all: $(TARGET)
 
 # Сборка
 $(TARGET): $(SRCS)
