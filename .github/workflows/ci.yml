@@ -28,6 +28,7 @@ jobs:
 
       - name: Проверяем, где установилась библиотека prometheus-cpp
         run: |
+          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
           find / -name "libprometheus-cpp*" 2>/dev/null || echo "Library not found!"
 
       - name: Run Make
