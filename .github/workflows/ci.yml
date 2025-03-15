@@ -28,7 +28,6 @@ jobs:
 
       - name: Проверяем, где установилась библиотека prometheus-cpp
         run: |
-          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
           find / -name "libprometheus-cpp*" 2>/dev/null || echo "Library not found!"
 
       - name: Run Make
@@ -63,7 +62,6 @@ jobs:
           cp DEBIAN/control artifacts/deb/DEBIAN/
           cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
-
       - name: Upload Debian Package
         uses: actions/upload-artifact@v4
         with:
@@ -102,5 +100,4 @@ jobs:
 
       - name: Restart Deployment in Kubernetes
         run: |
-          echo "yo"
           kubectl rollout restart deployment fibonacci-deployment
