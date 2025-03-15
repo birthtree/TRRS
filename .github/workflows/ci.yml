@@ -26,14 +26,24 @@ jobs:
           make -j$(nproc)
           sudo make install
 
-      - name: Проверяем, где установилась библиотека prometheus-cpp
+      - name: Проверяем установку библиотеки
         run: |
-          find / -name "libprometheus-cpp*" 2>/dev/null || echo "Library not found!"
+          find /usr/lib -name "libprometheus-cpp*" 2>/dev/null || echo "Library not found!"
+
+      - name: Проверяем доступность библиотеки
+        run: |
+          ldconfig -p | grep prometheus-cpp || echo "Library not found in ldconfig!"
+
+      - name: Проверяем наличие Makefile
+        run: |
+          if [ ! -f src/Makefile ]; then
+            echo "Makefile not found!"
+            exit 1
+          fi
 
       - name: Run Make
         run: |
           cd src
-          ls -l   # Проверяем, есть ли Makefile
           make || { echo "Make failed"; exit 1; }
 
       - name: Upload Artifact (Binary)
@@ -62,6 +72,7 @@ jobs:
           cp DEBIAN/control artifacts/deb/DEBIAN/
           cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
+
       - name: Upload Debian Package
         uses: actions/upload-artifact@v4
         with:

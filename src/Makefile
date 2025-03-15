@@ -1,17 +1,17 @@
 TARGET = fibonacci
 CC = g++
 CFLAGS = -Wall -Wextra -O2 -std=c++11
-LDFLAGS = -L/usr/local/lib -L/usr/local/lib64 -L/usr/lib -L/usr/lib/x86_64-linux-gnu -lprometheus-cpp -lcurl
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lprometheus-cpp -lcurl
 SRCS = Fibi.cpp
 
 all: $(TARGET) install clean
 
 $(TARGET): $(SRCS)
-    $(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 install:
-    mkdir -p ../usr/bin
-    cp $(TARGET) ../usr/bin/
+	mkdir -p ../usr/bin
+	cp $(TARGET) ../usr/bin/
 
 clean:
-    rm -f $(TARGET)
+	rm -f $(TARGET)
