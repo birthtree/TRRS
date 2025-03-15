@@ -1,24 +1,17 @@
 TARGET = fibonacci
 CC = g++
 CFLAGS = -Wall -Wextra -O2 -std=c++11
+LDFLAGS = -L/usr/local/lib -L/usr/local/lib64 -lprometheus-cpp -lcurl
 SRCS = Fibi.cpp
 
-# Путь к библиотекам
-LIB_PATH = /usr/local/lib
-LIBS = -lprometheus-cpp -lcurl
+all: $(TARGET) install clean
 
-# Цель по умолчанию
-all: $(TARGET)
-
-# Сборка
 $(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) -L$(LIB_PATH) $(LIBS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
-# Установка
 install:
-	mkdir -p /usr/local/bin
-	cp $(TARGET) /usr/local/bin/
+	mkdir -p ../usr/bin
+	cp $(TARGET) ../usr/bin/
 
-# Очистка
 clean:
 	rm -f $(TARGET)
