@@ -14,8 +14,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update 
-          sudo apt install -y build-essential dpkg g++ cmake git zlib1g-dev libcurl4-openssl-dev
+          sudo apt update
+          sudo apt install -y build-essential g++ cmake git libcurl4-openssl-dev
 
       - name: Install Prometheus C++ Client
         run: |
@@ -25,28 +25,19 @@ jobs:
           cmake .. -DBUILD_SHARED_LIBS=ON -DENABLE_BENCHMARK=OFF -DCMAKE_INSTALL_PREFIX=/usr
           make -j$(nproc)
           sudo make install
+          sudo ldconfig  # Обновляем кэш ldconfig
 
-      - name: Проверяем установку библиотеки
+      - name: Verify Prometheus C++ Client Installation
         run: |
-          find /usr/lib -name "libprometheus-cpp*" 2>/dev/null || echo "Library not found!"
-
-      - name: Проверяем доступность библиотеки
-        run: |
+          find /usr/lib -name "libprometheus-cpp*" || echo "Library not found!"
           ldconfig -p | grep prometheus-cpp || echo "Library not found in ldconfig!"
 
-      - name: Проверяем наличие Makefile
-        run: |
-          if [ ! -f src/Makefile ]; then
-            echo "Makefile not found!"
-            exit 1
-          fi
-
-      - name: Run Make
+      - name: Build Project
         run: |
           cd src
           make || { echo "Make failed"; exit 1; }
 
-      - name: Upload Artifact (Binary)
+      - name: Upload Binary Artifact
         uses: actions/upload-artifact@v4
         with:
           name: fibonacci-binary
@@ -59,7 +50,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Artifact
+      - name: Download Binary Artifact
         uses: actions/download-artifact@v4
         with:
           name: fibonacci-binary
@@ -73,7 +64,7 @@ jobs:
           cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
 
-      - name: Upload Debian Package
+      - name: Upload Debian Package Artifact
         uses: actions/upload-artifact@v4
         with:
           name: fibonacci-deb
@@ -86,11 +77,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Debian Package
+      - name: Download Debian Package Artifact
         uses: actions/download-artifact@v4
         with:
           name: fibonacci-deb
-          path: ./  
+          path: ./
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -104,11 +95,11 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: .  
+          context: .
           file: ./Dockerfile
           push: true
           tags: birthtree/fibonacci:latest
 
-      - name: Restart Deployment in Kubernetes
+      - name: Restart Kubernetes Deployment
         run: |
           kubectl rollout restart deployment fibonacci-deployment
