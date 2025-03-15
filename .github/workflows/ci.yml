@@ -36,12 +36,15 @@ jobs:
         run: |
           cd src
           make || { echo "Make failed"; exit 1; }
+          mkdir -p ../artifacts  # Создаем папку для артефактов
+          cp fibonacci ../artifacts/  # Копируем бинарный файл в папку artifacts
+          ls -l ../artifacts  # Проверяем, что файл скопирован
 
       - name: Upload Binary Artifact
         uses: actions/upload-artifact@v4
         with:
           name: fibonacci-binary
-          path: src/fibonacci
+          path: artifacts/fibonacci  # Указываем путь к файлу в папке artifacts
 
   RunPackage:
     needs: RunMake
