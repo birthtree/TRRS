@@ -17,12 +17,12 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
-# Копируем исходный код приложения и собираем его
-COPY . /app
-WORKDIR /app
-RUN mkdir build && cd build && \
-    cmake .. && \
-    make
+# Копируем и устанавливаем Debian-пакет
+COPY fibonacci.deb /tmp/fibonacci.deb
+RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f -y
+
+# Проверим, что бинарник в /usr/local/bin
+RUN ls -l /usr/local/bin
 
 # Финальный этап
 FROM ubuntu:latest
@@ -33,10 +33,10 @@ RUN apt-get update && apt-get install -y \
     zlib1g
 
 # Копируем бинарник из этапа сборки
-COPY --from=builder /app/build/fibonacci /usr/local/bin/fibonacci
+COPY --from=builder /usr/local/bin/fibonacci /usr/local/bin/fibonacci
 
-# Убедимся, что бинарник исполняемый
-RUN chmod +x /usr/local/bin/fibonacci
+# Проверим, что бинарник на месте
+RUN ls -l /usr/local/bin
 
 # Открываем порт
 EXPOSE 8080
