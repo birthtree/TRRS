@@ -44,5 +44,5 @@ RUN chmod +x /usr/local/bin/fibonacci
 # Открываем порт
 EXPOSE 8080
 
-# Запускаем программу с диагностикой
-CMD echo "Starting Fibonacci program..." && /usr/local/bin/fibonacci
+# Запускаем программу с диагностикой и выводим ошибки, если программа не запускается
+CMD /usr/local/bin/fibonacci || echo "Ошибка при запуске программы."
