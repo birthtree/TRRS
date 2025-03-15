@@ -1,9 +1,9 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - lab3
+      - main
 
 jobs:
   RunMake:
@@ -14,8 +14,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y build-essential dpkg cmake git zlib1g-dev libcurl4-openssl-dev pkg-config
+          sudo apt update 
+          sudo apt install -y build-essential dpkg g++ cmake git zlib1g-dev
 
       - name: Install Prometheus C++ Client
         run: |
@@ -25,18 +25,14 @@ jobs:
           cmake .. -DBUILD_SHARED_LIBS=ON
           make -j$(nproc)
           sudo make install
-          # Устанавливаем путь к библиотекам
-          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-          echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
 
       - name: Run Make
         run: |
           cd src
-          g++ $(pkg-config --cflags --libs prometheus-cpp) -Wall -Wextra -O2 -std=c++11 Fibi.cpp -o fibonacci
+          make || { echo "Make failed"; exit 1; }
           ls -l
           mkdir -p ../artifacts
-          cp fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
+          cp ../usr/bin/fibonacci ../artifacts/ || { echo "Failed to copy fibonacci to artifacts"; exit 1; }
 
       - name: Upload Artifact (Binary)
         uses: actions/upload-artifact@v4
@@ -64,7 +60,6 @@ jobs:
           cp DEBIAN/control artifacts/deb/DEBIAN/
           cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
-
       - name: Upload Debian Package
         uses: actions/upload-artifact@v4
         with:
@@ -82,7 +77,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: fibonacci-deb
-          path: ./ 
+          path: ./  
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -96,11 +91,11 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: .  
           file: ./Dockerfile
           push: true
           tags: birthtree/fibonacci:latest
 
-      - name: Run Container
+      - name: Restart Deployment in Kubernetes
         run: |
-          docker run --rm birthtree/fibonacci
+          kubectl rollout restart deployment fibonacci-deployment

@@ -1,15 +1,9 @@
 FROM ubuntu:latest
 
-# Установка зависимостей
-RUN apt update && apt install -y \
-    build-essential \
-    cmake \
-    git \
-    zlib1g-dev \
-    libcurl4-openssl-dev \
-    pkg-config
+# Устанавливаем зависимости
+RUN apt-get update && apt-get install -y dpkg g++ build-essential cmake git zlib1g-dev 
 
-# Установка Prometheus C++ Client
+# Устанавливаем Prometheus C++ Client
 RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     cd prometheus-cpp && \
     mkdir build && cd build && \
@@ -17,16 +11,10 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
-# Копирование исходного кода
-COPY src/Fibi.cpp /app/src/Fibi.cpp
-COPY Makefile /app/Makefile
+# Копируем собранный бинарник в контейнер
+COPY fibonacci.deb /tmp/fibonacci.deb
+RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f
+RUN chmod +x /usr/local/bin/fibonacci
 
-# Сборка приложения
-WORKDIR /app
-RUN make
-
-# Открытие порта
-EXPOSE 8080
-
-# Запуск приложения
-CMD ["./fibonacci"]
+EXPOSE 8080  
+ENTRYPOINT ["/usr/local/bin/fibonacci"]
