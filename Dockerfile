@@ -17,12 +17,12 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
+# Проверим, что бинарник на месте
+RUN ls -l /usr/local/bin
+
 # Копируем и устанавливаем Debian-пакет
 COPY fibonacci.deb /tmp/fibonacci.deb
 RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f -y
-
-# Проверим, что бинарник в /usr/local/bin
-RUN ls -l /usr/local/bin
 
 # Финальный этап
 FROM ubuntu:latest
