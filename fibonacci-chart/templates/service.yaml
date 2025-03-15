@@ -7,9 +7,13 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.port }}  # Порт для HTTP-запросов
       targetPort: http
       protocol: TCP
       name: http
+    - port: 8080  # Порт для метрик
+      targetPort: 8080
+      protocol: TCP
+      name: metrics
   selector:
     {{- include "fibonacci-chart.selectorLabels" . | nindent 4 }}

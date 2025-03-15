@@ -5,23 +5,18 @@ metadata:
   labels:
     {{- include "fibonacci-chart.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "fibonacci-chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        prometheus.io/scrape: "true"  # Разрешаем Prometheus собирать метрики
+        prometheus.io/port: "8080"    # Порт для сбора метрик
+        prometheus.io/path: "/metrics" # Путь для сбора метрик
       labels:
-        {{- include "fibonacci-chart.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "fibonacci-chart.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -43,6 +38,9 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: metrics
+              containerPort: 8080
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
