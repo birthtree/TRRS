@@ -101,4 +101,5 @@ jobs:
 
       - name: Restart Deployment in Kubernetes
         run: |
+          echo "yo"
           kubectl rollout restart deployment fibonacci-deployment
