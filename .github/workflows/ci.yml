@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update 
-          sudo apt install -y build-essential dpkg g++ cmake git zlib1g-dev
+          sudo apt install -y build-essential dpkg g++ cmake git zlib1g-dev libcurl4-openssl-dev
 
       - name: Install Prometheus C++ Client
         run: |
