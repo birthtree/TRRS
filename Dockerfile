@@ -1,9 +1,15 @@
-FROM ubuntu:latest
+# Этап сборки
+FROM ubuntu:latest as builder
 
 # Устанавливаем зависимости
-RUN apt-get update && apt-get install -y dpkg g++ build-essential cmake git zlib1g-dev 
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    libcurl4-openssl-dev \
+    zlib1g-dev
 
-# Устанавливаем Prometheus C++ Client
+# Клонируем и собираем prometheus-cpp
 RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     cd prometheus-cpp && \
     mkdir build && cd build && \
@@ -11,10 +17,23 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
-# Копируем собранный бинарник в контейнер
+# Копируем и устанавливаем Debian-пакет
 COPY fibonacci.deb /tmp/fibonacci.deb
-RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f
-RUN chmod +x /usr/local/bin/fibonacci
+RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f -y
 
-EXPOSE 8080  
+# Финальный этап
+FROM ubuntu:latest
+
+# Устанавливаем необходимые зависимости для запуска
+RUN apt-get update && apt-get install -y \
+    libcurl4 \
+    zlib1g
+
+# Копируем бинарник из этапа сборки
+COPY --from=builder /usr/local/bin/fibonacci /usr/local/bin/fibonacci
+
+# Открываем порт
+EXPOSE 8080
+
+# Указываем команду для запуска
 ENTRYPOINT ["/usr/local/bin/fibonacci"]
