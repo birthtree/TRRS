@@ -63,6 +63,7 @@ jobs:
           cp DEBIAN/control artifacts/deb/DEBIAN/
           cp artifacts/fibonacci artifacts/deb/usr/local/bin/
           dpkg-deb --build artifacts/deb fibonacci.deb
+
       - name: Upload Debian Package
         uses: actions/upload-artifact@v4
         with:

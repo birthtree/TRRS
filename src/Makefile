@@ -1,17 +1,20 @@
-TARGET = fibonacci
-CC = g++
-CFLAGS = -Wall -Wextra -O2 -std=c++11
-LDFLAGS = -L/usr/local/lib -L/usr/local/lib64 -L/usr/lib -L/usr/lib/x86_64-linux-gnu -lprometheus-cpp -lcurl
-SRCS = Fibi.cpp
+# Указываем компилятор и флаги
+CXX = g++
+CXXFLAGS = -Wall -g -I/usr/include/prometheus  # Указываем путь к заголовочным файлам
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu  # Указываем путь к библиотекам
+LDLIBS = -lprometheus-cpp-core -lprometheus-cpp-pull -lprometheus-cpp-push  # Линки на библиотеки
 
-all: $(TARGET) install clean
+# Цель по умолчанию
+all: your_program
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+# Правила для сборки
+your_program: main.o
+	$(CXX) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
-install:
-	mkdir -p ../usr/bin
-	cp $(TARGET) ../usr/bin/
+# Компиляция исходников
+main.o: main.cpp
+	$(CXX) -c $< $(CXXFLAGS)
 
+# Удаление скомпилированных файлов
 clean:
-	rm -f $(TARGET)
+	rm -f *.o your_program
