@@ -1,7 +1,6 @@
-# Этап сборки
-FROM ubuntu:latest as builder
+FROM ubuntu:latest
 
-# Устанавливаем зависимости
+# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -17,35 +16,12 @@ RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp.git && \
     make -j$(nproc) && \
     make install
 
-# Проверим, что бинарник на месте
-RUN ls -l /usr/local/bin
+# Копируем исходный код программы
+COPY src /src
+WORKDIR /src
 
-# Копируем и устанавливаем Debian-пакет
-COPY fibonacci.deb /tmp/fibonacci.deb
-RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f -y
+# Собираем программу
+RUN make
 
-# Проверим, что бинарник на месте после установки
-RUN ls -l /usr/local/bin
-
-# Финальный этап
-FROM ubuntu:latest
-
-# Устанавливаем необходимые зависимости для запуска
-RUN apt-get update && apt-get install -y \
-    libcurl4 \
-    zlib1g
-
-# Копируем бинарник из этапа сборки
-COPY --from=builder /usr/local/bin/fibonacci /usr/local/bin/fibonacci
-
-# Проверим, что бинарник на месте
-RUN ls -l /usr/local/bin
-
-# Даем права на выполнение
-RUN chmod +x /usr/local/bin/fibonacci
-
-# Открываем порт
-EXPOSE 8080
-
-# Запускаем программу с диагностикой
-CMD echo "Starting Fibonacci program..." && /usr/local/bin/fibonacci
+# Запуск программы
+CMD ["./fibonacci"]
