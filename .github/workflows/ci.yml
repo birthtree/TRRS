@@ -39,6 +39,9 @@ jobs:
           mkdir -p ../artifacts  # Создаем папку для артефактов
           cp fibonacci ../artifacts/  # Копируем бинарный файл в папку artifacts
           ls -l ../artifacts  # Проверяем, что файл скопирован
+          mkdir -p ../usr/bin
+          cp fibonacci ../usr/bin/  # Копируем бинарный файл в папку usr/bin
+          rm -f fibonacci  # Удаляем файл после копирования
 
       - name: Upload Binary Artifact
         uses: actions/upload-artifact@v4
