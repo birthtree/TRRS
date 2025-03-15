@@ -41,5 +41,6 @@ RUN ls -l /usr/local/bin
 # Открываем порт
 EXPOSE 8080
 
-# Указываем команду для запуска
-ENTRYPOINT ["/usr/local/bin/fibonacci"]
+
+CMD ["/usr/local/bin/fibonacci"]
+
