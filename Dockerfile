@@ -38,9 +38,11 @@ COPY --from=builder /usr/local/bin/fibonacci /usr/local/bin/fibonacci
 # Проверим, что бинарник на месте
 RUN ls -l /usr/local/bin
 
+# Даем права на выполнение
+RUN chmod +x /usr/local/bin/fibonacci
+
 # Открываем порт
 EXPOSE 8080
 
-
-CMD ["/usr/local/bin/fibonacci"]
-
+# Запускаем программу с диагностикой
+CMD echo "Starting Fibonacci program..." && /usr/local/bin/fibonacci
