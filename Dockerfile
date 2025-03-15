@@ -24,6 +24,9 @@ RUN ls -l /usr/local/bin
 COPY fibonacci.deb /tmp/fibonacci.deb
 RUN dpkg -i /tmp/fibonacci.deb || apt-get install -f -y
 
+# Проверим, что бинарник на месте после установки
+RUN ls -l /usr/local/bin
+
 # Финальный этап
 FROM ubuntu:latest
 
@@ -44,5 +47,5 @@ RUN chmod +x /usr/local/bin/fibonacci
 # Открываем порт
 EXPOSE 8080
 
-# Запускаем программу с диагностикой и выводим ошибки
-CMD echo "Запуск программы..." && /usr/local/bin/fibonacci || echo "Ошибка при запуске программы."
+# Запускаем программу с диагностикой
+CMD echo "Starting Fibonacci program..." && /usr/local/bin/fibonacci
