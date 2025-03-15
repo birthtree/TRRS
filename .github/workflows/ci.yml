@@ -22,7 +22,7 @@ jobs:
           git clone --recursive https://github.com/jupp0r/prometheus-cpp.git
           cd prometheus-cpp
           mkdir build && cd build
-          cmake .. -DBUILD_SHARED_LIBS=ON -DENABLE_BENCHMARK=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake .. -DBUILD_SHARED_LIBS=ON -DENABLE_BENCHMARK=OFF -DCMAKE_INSTALL_PREFIX=/usr
           make -j$(nproc)
           sudo make install
 
