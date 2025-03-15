@@ -105,7 +105,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: birthtree/fibonacci:latest
-
-      - name: Restart Kubernetes Deployment
-        run: |
-          kubectl rollout restart deployment fibonacci-deployment
