@@ -64,6 +64,6 @@ int main(int argc, char* argv[]) {
         // Ждём 5 секунд перед следующим запросом
         this_thread::sleep_for(chrono::seconds(5));
     }
-
+    //sudo docker run --rm -p 8080:8080 birthtree/fibonacci:latest
     return 0;
 }

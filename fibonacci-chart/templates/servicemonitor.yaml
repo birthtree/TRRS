@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fibonacci-monitor
+  labels:
+    release: prometheus  
+spec:
+  selector:
+    matchLabels:
+      app: fibonacci  
+  namespaceSelector:
+    matchNames:
+      - default  
+  endpoints:
+    - port: "8080" 
+      path: /metrics  
+      interval: 30s   
